@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Kayıt Formu</title>
+    <style>
+        body {
+            background-color: #ffe4e1;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><text x="20" y="40" font-size="40">🌸</text><text x="100" y="80" font-size="40">🌸</text><text x="40" y="160" font-size="40">🌸</text><text x="160" y="120" font-size="40">🌸</text></svg>');
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 2px solid #ffb6c1;
+            transition: border-color 0.3s;
+        }
+
+        .form-container:hover {
+            border-color: #ff7f7f;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-container input:focus {
+            border-color: #ff7f7f;
+            outline: none;
+        }
+
+        .form-container input[type="file"] {
+            border: none;
+        }
+
+        .form-container button {
+            background-color: #ff7f7f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .form-container button:hover {
+            background-color: #ff4c4c;
+        }
+
+        .form-container .camera {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .form-container video {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .form-container canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Öğrenci Kayıt Formu</h2>
+        <form>
+            <input type="text" name="ad" placeholder="Ad" required>
+            <input type="text" name="soyad" placeholder="Soyad" required>
+            <input type="text" name="tc" placeholder="TC Kimlik" required>
+            <input type="email" name="email" placeholder="E-Posta" required>
+            <input type="date" name="dob" placeholder="Doğum Tarihi" required>
+            <input type="file" name="fotograf" accept="image/*">
+            <button type="button" id="open-camera">Fotoğraf Çek</button>
+            <div class="camera" id="camera-container">
+                <video id="video" autoplay></video>
+                <button type="button" id="capture">Fotoğraf Çek ve Kaydet</button>
+                <canvas id="canvas"></canvas>
+            </div>
+            <button type="submit">Gönder</button>
+        </form>
+    </div>
+
+    <script>
+        const openCameraButton = document.getElementById('open-camera');
+        const cameraContainer = document.getElementById('camera-container');
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('capture');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        openCameraButton.addEventListener('click', () => {
+            cameraContainer.style.display = 'flex';
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error('Kamera erişim hatası:', err);
+                    alert('Kamera açılamadı. Lütfen izin verdiğinizden emin olun.');
+                });
+        });
+
+        captureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png');
+            console.log('Çekilen Fotoğraf:', imageData);
+            alert('Fotoğraf çekildi ve kaydedildi!');
+        });
+    </script>
+</body>
+</html>
